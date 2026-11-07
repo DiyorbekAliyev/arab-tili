@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17110d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Arab tili">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>Arab tili — mening ilovam</title>
+<style>
+@font-face{font-family:'Amiri';font-weight:400;font-style:normal;font-display:swap;src:url(fonts/amiri-arabic-400-normal.woff2) format('woff2')}
+@font-face{font-family:'Amiri';font-weight:700;font-style:normal;font-display:swap;src:url(fonts/amiri-arabic-700-normal.woff2) format('woff2')}
+textarea{width:100%;min-height:90px;font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--tx);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+:root{--bg:#17110d;--card:#241a14;--card2:#2e2219;--line:#3b2d22;--tx:#f3e9dc;--mut:#a8977f;--gold:#d9b36c;--ok:#6fbf8b;--bad:#e07a6b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{padding:env(safe-area-inset-top) 0 0}
+#app{max-width:520px;margin:0 auto;padding:16px 14px calc(96px + env(safe-area-inset-bottom))}
+.ar{font-family:'Amiri','Geeza Pro','Traditional Arabic',serif;direction:rtl}
+h1{font-size:22px;margin:4px 0 2px}
+h2{font-size:15px;margin:22px 0 10px;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+p.m{color:var(--mut);margin:2px 0 12px;font-size:14px;line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:10px}
+.sp{flex:1}
+button,.btn{font:inherit;color:var(--tx);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+button:active{transform:scale(.98)}
+.pri{background:var(--gold);color:#2a1d0c;border-color:var(--gold);font-weight:700}
+.full{width:100%}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;direction:rtl}
+.lt{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 2px 7px;text-align:center;cursor:pointer;direction:ltr}
+.lt.k{border-color:var(--ok);background:#1f2a22}
+.lt .ar{font-size:38px;line-height:1.25;display:block;direction:rtl}
+.lt small{font-size:11px;color:var(--mut)}
+.nav{position:fixed;left:0;right:0;bottom:0;background:#120d0a;border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:5}
+.nav div{max-width:520px;width:100%;display:flex}
+.nav button{flex:1;border:0;border-radius:0;background:none;padding:10px 2px 9px;font-size:11px;color:var(--mut)}
+.nav button b{display:block;font-size:20px;font-weight:400;margin-bottom:1px}
+.nav button.on{color:var(--gold)}
+.big{font-size:64px;line-height:1.4;text-align:center}
+.ctr{text-align:center}
+.tag{display:inline-block;font-size:11px;color:var(--gold);border:1px solid var(--line);border-radius:20px;padding:2px 9px}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:20px;height:20px;border-radius:6px;background:var(--card2);border:1px solid var(--line)}
+.dot.a{background:var(--gold);border-color:var(--gold)}
+.task{display:flex;align-items:center;gap:12px}
+.chk{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.chk.d{background:var(--ok);border-color:var(--ok);color:#10281a}
+.bar{height:6px;background:var(--card2);border-radius:4px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--gold)}
+.opt{display:block;width:100%;margin-bottom:8px;text-align:left;font-size:16px}
+.opt.ar{text-align:center;font-size:28px}
+.opt.ok{background:#1f2a22;border-color:var(--ok)}
+.opt.no{background:#2e1c19;border-color:var(--bad)}
+input[type=text]{width:100%;font:inherit;font-size:17px;color:var(--tx);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:8px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:20;display:none;align-items:flex-end;justify-content:center}
+#modal.on{display:flex}
+#sheet{background:var(--card);border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:18px 16px calc(20px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.forms{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;direction:rtl;margin:10px 0}
+.forms div{background:var(--card2);border-radius:10px;text-align:center;padding:6px 0;direction:ltr}
+.forms .ar{font-size:30px;display:block;line-height:1.5}
+.forms small{font-size:10px;color:var(--mut)}
+#toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#000;color:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;max-width:88%;z-index:30;display:none;text-align:center}
+.wl{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.wl:last-child{border:0}
+.wl .ar{font-size:26px;min-width:84px;text-align:right}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mt button{min-height:56px;font-size:15px}
+.mt button.ar{font-size:26px}
+.mt button.sel{border-color:var(--gold)}
+.mt button.dn{opacity:.3}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="nav"><div id="nav"></div></div>
+<div id="modal"><div id="sheet"></div></div>
+<div id="toast"></div>
+<script>
+/* ---------- ma'lumotlar ---------- */
+// [harf, nomi, aytiladigan nom, o'qilishi, misol so'z, o'qilishi, tarjima, ulanadimi(chapga)]
+const LET=[
+['ا','Alif','ألف','cho\'ziq "a" tovushi','أسد','asad','sher',0],
+['ب','Ba','باء','"b"','باب','bab','eshik',1],
+['ت','Ta','تاء','"t"','تفاح','tuffah','olma',1],
+['ث','Tha','ثاء','"s" (til tishlar orasida)','ثعلب','tha\'lab','tulki',1],
+['ج','Jim','جيم','"j"','جمل','jamal','tuya',1],
+['ح','Ha','حاء','"h" (qattiq, bo\'g\'izdan)','حليب','halib','sut',1],
+['خ','Kha','خاء','"x"','خبز','xubz','non',1],
+['د','Dal','دال','"d"','دجاج','dajaj','tovuq',0],
+['ذ','Dhal','ذال','"z" (til tishlar orasida)','ذهب','dhahab','oltin',0],
+['ر','Ra','راء','"r"','رجل','rajul','erkak',0],
+['ز','Zay','زاي','"z"','زهرة','zahra','gul',0],
+['س','Sin','سين','"s"','سمك','samak','baliq',1],
+['ش','Shin','شين','"sh"','شمس','shams','quyosh',1],
+['ص','Sad','صاد','"s" (qalin)','صباح','sabah','ertalab',1],
+['ض','Dad','ضاد','"d" (qalin)','ضفدع','difda\'','baqa',1],
+['ط','Ta (qalin)','طاء','"t" (qalin)','طالب','talib','talaba',1],
+['ظ','Dha','ظاء','"z" (qalin)','ظرف','zarf','konvert',1],
+['ع','Ayn','عين','bo\'g\'iz tovushi (\')','عين','ayn','ko\'z',1],
+['غ','Ghayn','غين','"g\'"','غرفة','ghurfa','xona',1],
+['ف','Fa','فاء','"f"','فيل','fil','fil',1],
+['ق','Qaf','قاف','"q" (chuqur)','قمر','qamar','oy',1],
+['ك','Kaf','كاف','"k"','كتاب','kitab','kitob',1],
+['ل','Lam','لام','"l"','ليمون','laymun','limon',1],
+['م','Mim','ميم','"m"','ماء','maa','suv',1],
+['ن','Nun','نون','"n"','نور','nur','nur',1],
+['ه','Ha (yengil)','هاء','"h" (yengil)','هلال','hilal','yarim oy',1],
+['و','Waw','واو','"v" yoki "u"','ولد','walad','bola',0],
+['ي','Ya','ياء','"y" yoki "i"','يد','yad','qo\'l',1]
+];
+const W0=[
+['Salomlashuv','مرحبا','marhaban','salom'],['Salomlashuv','السلام عليكم','assalamu alaykum','assalomu alaykum'],
+['Salomlashuv','شكرا','shukran','rahmat'],['Salomlashuv','من فضلك','min fadlik','iltimos'],
+['Salomlashuv','نعم','na\'am','ha'],['Salomlashuv','لا','la','yo\'q'],
+['Salomlashuv','صباح الخير','sabahul xayr','xayrli tong'],['Salomlashuv','مع السلامة','ma\'as salama','xayr (xayrlashuv)'],
+['Salomlashuv','كيف حالك','kayfa haluk','qandaysiz?'],['Salomlashuv','اسمي','ismi','mening ismim'],
+['Oila','أب','ab','ota'],['Oila','أم','umm','ona'],['Oila','أخ','akh','aka / uka'],['Oila','أخت','ukht','opa / singil'],
+['Oila','ابن','ibn','o\'g\'il'],['Oila','بنت','bint','qiz'],['Oila','جد','jadd','bobo'],['Oila','جدة','jadda','buvi'],
+['Kundalik','ماء','maa','suv'],['Kundalik','خبز','xubz','non'],['Kundalik','بيت','bayt','uy'],['Kundalik','كتاب','kitab','kitob'],
+['Kundalik','مدرسة','madrasa','maktab'],['Kundalik','قلم','qalam','qalam'],['Kundalik','باب','bab','eshik'],
+['Kundalik','سيارة','sayyara','mashina'],['Kundalik','شمس','shams','quyosh'],['Kundalik','قمر','qamar','oy'],
+['Kundalik','يوم','yawm','kun'],['Kundalik','ليل','layl','tun'],['Kundalik','طعام','ta\'am','ovqat'],['Kundalik','مسجد','masjid','masjid'],
+['Raqamlar','واحد','wahid','bir (1)'],['Raqamlar','اثنان','ithnan','ikki (2)'],['Raqamlar','ثلاثة','thalatha','uch (3)'],
+['Raqamlar','أربعة','arba\'a','to\'rt (4)'],['Raqamlar','خمسة','khamsa','besh (5)'],['Raqamlar','ستة','sitta','olti (6)'],
+['Raqamlar','سبعة','sab\'a','yetti (7)'],['Raqamlar','ثمانية','thamaniya','sakkiz (8)'],['Raqamlar','تسعة','tis\'a','to\'qqiz (9)'],['Raqamlar','عشرة','ashara','o\'n (10)'],
+['Din','الله','Allah','Alloh'],['Din','صلاة','salat','namoz'],['Din','قرآن','qur\'an','Qur\'on'],['Din','دعاء','du\'a','duo'],
+['Din','إسلام','islam','islom'],['Din','حمد','hamd','hamd (maqtov)'],['Din','بسم الله','bismillah','Alloh nomi bilan'],['Din','الحمد لله','alhamdulillah','Allohga hamd bo\'lsin']
+];
+const W1=[
+["Salomlashuv","وعليكم السلام","wa alaykumus salam","va alaykum assalom"],["Salomlashuv","أهلا وسهلا","ahlan wa sahlan","xush kelibsiz"],
+["Salomlashuv","مساء الخير","masaul xayr","xayrli kech"],["Salomlashuv","تصبح على خير","tusbih ala xayr","xayrli tun"],
+["Salomlashuv","عفوا","afwan","marhamat / kechirasiz"],["Salomlashuv","آسف","asif","uzr, kechirasiz"],
+["Salomlashuv","بخير","bi-xayr","yaxshi (holim yaxshi)"],["Salomlashuv","تشرفنا","tasharrafna","tanishganimdan xursandman"],
+["Salomlashuv","ما اسمك","ma ismuka","ismingiz nima?"],
+["Olmoshlar","أنا","ana","men"],["Olmoshlar","أنت","anta","sen (erkak)"],["Olmoshlar","هو","huwa","u (erkak)"],["Olmoshlar","هي","hiya","u (ayol)"],
+["Olmoshlar","نحن","nahnu","biz"],["Olmoshlar","أنتم","antum","sizlar"],["Olmoshlar","هم","hum","ular (erkaklar)"],
+["Olmoshlar","هذا","hadha","bu (erkak)"],["Olmoshlar","هذه","hadhihi","bu (ayol)"],["Olmoshlar","ذلك","dhalika","u (uzoqdagi)"],
+["Savollar","ما","ma","nima"],["Savollar","من","man","kim"],["Savollar","أين","ayna","qayerda"],["Savollar","متى","mata","qachon"],
+["Savollar","لماذا","limadha","nega"],["Savollar","كيف","kayfa","qanday"],["Savollar","كم","kam","qancha"],["Savollar","هل","hal","...mi? (savol yuklamasi)"],
+["Raqamlar","صفر","sifr","nol (0)"],["Raqamlar","عشرون","ishrun","yigirma (20)"],["Raqamlar","مئة","mi'a","yuz (100)"],["Raqamlar","ألف","alf","ming (1000)"],
+["Tana","رأس","ra's","bosh"],["Tana","عين","ayn","ko'z"],["Tana","أذن","udhun","quloq"],["Tana","أنف","anf","burun"],["Tana","فم","fam","og'iz"],
+["Tana","يد","yad","qo'l"],["Tana","قدم","qadam","oyoq (kaft)"],["Tana","قلب","qalb","yurak"],["Tana","وجه","wajh","yuz"],["Tana","شعر","sha'r","soch"],["Tana","سن","sinn","tish"],["Tana","ظهر","zahr","orqa"],
+["Ovqat","لحم","lahm","go'sht"],["Ovqat","سمك","samak","baliq (go'shti)"],["Ovqat","أرز","uruzz","guruch"],["Ovqat","حليب","halib","sut"],
+["Ovqat","شاي","shay","choy"],["Ovqat","قهوة","qahwa","qahva"],["Ovqat","عصير","'asir","sharbat"],["Ovqat","تفاح","tuffah","olma"],
+["Ovqat","موز","mawz","banan"],["Ovqat","برتقال","burtuqal","apelsin"],["Ovqat","عنب","'inab","uzum"],["Ovqat","بيض","bayd","tuxum"],
+["Ovqat","ملح","milh","tuz"],["Ovqat","سكر","sukkar","shakar"],["Ovqat","جبن","jubn","pishloq"],
+["Ranglar","أحمر","ahmar","qizil"],["Ranglar","أزرق","azraq","ko'k"],["Ranglar","أخضر","akhdar","yashil"],["Ranglar","أصفر","asfar","sariq"],
+["Ranglar","أبيض","abyad","oq"],["Ranglar","أسود","aswad","qora"],["Ranglar","بني","bunni","jigarrang"],["Ranglar","رمادي","ramadi","kulrang"],["Ranglar","وردي","wardi","pushti"],
+["Uy va buyumlar","غرفة","ghurfa","xona"],["Uy va buyumlar","مطبخ","matbakh","oshxona"],["Uy va buyumlar","حمام","hammam","hammom"],
+["Uy va buyumlar","نافذة","nafidha","deraza"],["Uy va buyumlar","طاولة","tawila","stol"],["Uy va buyumlar","كرسي","kursi","stul"],
+["Uy va buyumlar","سرير","sarir","karavot"],["Uy va buyumlar","مفتاح","miftah","kalit"],["Uy va buyumlar","مصباح","misbah","chiroq"],
+["Uy va buyumlar","هاتف","hatif","telefon"],["Uy va buyumlar","حاسوب","hasub","kompyuter"],["Uy va buyumlar","ساعة","sa'a","soat"],
+["Uy va buyumlar","حقيبة","haqiba","sumka"],["Uy va buyumlar","نظارة","nazzara","ko'zoynak"],
+["Tabiat","سماء","sama'","osmon"],["Tabiat","أرض","ard","yer"],["Tabiat","نهر","nahr","daryo"],["Tabiat","بحر","bahr","dengiz"],
+["Tabiat","جبل","jabal","tog'"],["Tabiat","شجرة","shajara","daraxt"],["Tabiat","زهرة","zahra","gul"],["Tabiat","مطر","matar","yomg'ir"],
+["Tabiat","ثلج","thalj","qor"],["Tabiat","ريح","rih","shamol"],["Tabiat","نجم","najm","yulduz"],["Tabiat","نار","nar","olov"],["Tabiat","بحيرة","buhayra","ko'l"],["Tabiat","حجر","hajar","tosh"],
+["Vaqt va kunlar","اليوم","al-yawm","bugun"],["Vaqt va kunlar","غدا","ghadan","ertaga"],["Vaqt va kunlar","أمس","ams","kecha"],
+["Vaqt va kunlar","صباح","sabah","ertalab"],["Vaqt va kunlar","مساء","masa'","kechqurun"],["Vaqt va kunlar","أسبوع","usbu'","hafta"],
+["Vaqt va kunlar","شهر","shahr","oy (taqvim)"],["Vaqt va kunlar","سنة","sana","yil"],["Vaqt va kunlar","دقيقة","daqiqa","daqiqa"],["Vaqt va kunlar","الآن","al-an","hozir"],
+["Vaqt va kunlar","الإثنين","al-ithnayn","dushanba"],["Vaqt va kunlar","الثلاثاء","ath-thulatha'","seshanba"],["Vaqt va kunlar","الأربعاء","al-arbi'a'","chorshanba"],
+["Vaqt va kunlar","الخميس","al-khamis","payshanba"],["Vaqt va kunlar","الجمعة","al-jum'a","juma"],["Vaqt va kunlar","السبت","as-sabt","shanba"],["Vaqt va kunlar","الأحد","al-ahad","yakshanba"],
+["Fe'llar (o'tgan zamon)","ذهب","dhahaba","bordi"],["Fe'llar (o'tgan zamon)","كتب","kataba","yozdi"],["Fe'llar (o'tgan zamon)","قرأ","qara'a","o'qidi"],
+["Fe'llar (o'tgan zamon)","أكل","akala","yedi"],["Fe'llar (o'tgan zamon)","شرب","shariba","ichdi"],["Fe'llar (o'tgan zamon)","جلس","jalasa","o'tirdi"],
+["Fe'llar (o'tgan zamon)","دخل","dakhala","kirdi"],["Fe'llar (o'tgan zamon)","خرج","kharaja","chiqdi"],["Fe'llar (o'tgan zamon)","فتح","fataha","ochdi"],
+["Fe'llar (o'tgan zamon)","سمع","sami'a","eshitdi"],["Fe'llar (o'tgan zamon)","رأى","ra'a","ko'rdi"],["Fe'llar (o'tgan zamon)","عرف","'arafa","bildi"],
+["Fe'llar (o'tgan zamon)","فهم","fahima","tushundi"],["Fe'llar (o'tgan zamon)","عمل","'amila","ishladi"],["Fe'llar (o'tgan zamon)","نام","nama","uxladi"],
+["Fe'llar (o'tgan zamon)","قال","qala","dedi"],["Fe'llar (o'tgan zamon)","أخذ","akhadha","oldi"],["Fe'llar (o'tgan zamon)","جاء","ja'a","keldi"],
+["Fe'llar (o'tgan zamon)","درس","darasa","o'rgandi"],["Fe'llar (o'tgan zamon)","لعب","la'iba","o'ynadi"],["Fe'llar (o'tgan zamon)","سأل","sa'ala","so'radi"],
+["Sifatlar","كبير","kabir","katta"],["Sifatlar","صغير","saghir","kichik"],["Sifatlar","جديد","jadid","yangi"],["Sifatlar","قديم","qadim","eski"],
+["Sifatlar","جميل","jamil","chiroyli"],["Sifatlar","طويل","tawil","uzun"],["Sifatlar","قصير","qasir","qisqa"],["Sifatlar","سريع","sari'","tez"],
+["Sifatlar","بطيء","bati'","sekin"],["Sifatlar","حار","harr","issiq"],["Sifatlar","بارد","barid","sovuq"],["Sifatlar","سهل","sahl","oson"],
+["Sifatlar","صعب","sa'b","qiyin"],["Sifatlar","جيد","jayyid","yaxshi"],["Sifatlar","سيء","sayyi'","yomon"],["Sifatlar","كثير","kathir","ko'p"],["Sifatlar","قليل","qalil","oz"],
+["Joylar","مدينة","madina","shahar"],["Joylar","قرية","qarya","qishloq"],["Joylar","شارع","shari'","ko'cha"],["Joylar","سوق","suq","bozor"],
+["Joylar","مستشفى","mustashfa","kasalxona"],["Joylar","مطار","matar","aeroport"],["Joylar","محطة","mahatta","bekat"],["Joylar","مطعم","mat'am","restoran"],
+["Joylar","حديقة","hadiqa","bog'"],["Joylar","جامعة","jami'a","universitet"],["Joylar","مكتبة","maktaba","kutubxona"],["Joylar","دكان","dukkan","do'kon"],
+["Kasblar","معلم","mu'allim","o'qituvchi"],["Kasblar","طبيب","tabib","shifokor"],["Kasblar","طالب","talib","talaba"],["Kasblar","مهندس","muhandis","muhandis"],
+["Kasblar","سائق","sa'iq","haydovchi"],["Kasblar","مدير","mudir","direktor"],["Kasblar","تاجر","tajir","savdogar"],["Kasblar","طباخ","tabbakh","oshpaz"],
+["Hayvonlar","قط","qitt","mushuk"],["Hayvonlar","كلب","kalb","it"],["Hayvonlar","حصان","hisan","ot"],["Hayvonlar","بقرة","baqara","sigir"],
+["Hayvonlar","خروف","kharuf","qo'y"],["Hayvonlar","طائر","ta'ir","qush"],["Hayvonlar","أسد","asad","sher"],["Hayvonlar","جمل","jamal","tuya"],
+["Hayvonlar","فيل","fil","fil"],["Hayvonlar","حمار","himar","eshak"],
+["Din","صوم","sawm","ro'za"],["Din","زكاة","zakat","zakot"],["Din","حج","hajj","haj"],["Din","نبي","nabiy","payg'ambar"],["Din","ملك","malak","farishta"],
+["Din","جنة","janna","jannat"],["Din","إيمان","iman","iymon"],["Din","سورة","sura","sura"],["Din","آية","aya","oyat"],["Din","رمضان","ramadan","Ramazon"],
+["Din","وضوء","wudu'","tahorat"],["Din","مسلم","muslim","musulmon"],["Din","سبحان الله","subhanallah","Alloh pokdir"],["Din","الله أكبر","Allahu akbar","Alloh buyukdir"],
+["Din","ما شاء الله","ma sha Allah","Alloh xohlagani"],["Din","إن شاء الله","in sha Allah","Alloh xohlasa"],["Din","جزاك الله خيرا","jazakallahu khayran","Alloh sizga yaxshilik bersin"],
+["Iboralar","أريد","urid","men xohlayman"],["Iboralar","لا أعرف","la a'rif","bilmayman"],["Iboralar","لا أفهم","la afham","tushunmayapman"],
+["Iboralar","أحب","uhibb","yaxshi ko'raman"],["Iboralar","كم الثمن","kam ath-thaman","narxi qancha?"],["Iboralar","أنا من أوزبكستان","ana min uzbakistan","men O'zbekistondanman"],
+["Iboralar","هل تتكلم العربية","hal tatakallam al-arabiyya","arabcha gapirasizmi?"],["Iboralar","أين المسجد","ayna al-masjid","masjid qayerda?"],
+["Iboralar","ساعدني","sa'idni","menga yordam bering"],["Iboralar","تكلم ببطء","takallam bi-but'","sekinroq gapiring"]
+];
+const W=[...W0,...W1].map((w,i)=>({id:'w'+i,cat:w[0],ar:w[1],tr:w[2],uz:w[3]}));
+const IV=[0,1,2,4,8,16];
+
+/* ---------- holat ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={cards:{},letters:{},days:{},custom:[],videos:[],vflag:0,hl:{}};
+try{const r=localStorage.getItem('arab_tili_v1');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem('arab_tili_v1',JSON.stringify(S))}catch(e){}};
+const dk=(d=new Date())=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return dk(d)};
+const day=()=>{const k=dk();return S.days[k]||(S.days[k]={l:[],c:0,p:0})};
+const isAct=k=>{const d=S.days[k];return !!d&&(d.l.length||d.c||d.p||d.h)};
+function streak(){let n=0,d=new Date();if(!isAct(dk(d)))d.setDate(d.getDate()-1);while(isAct(dk(d))){n++;d.setDate(d.getDate()-1)}return n}
+const allWords=()=>[...W,...S.custom.map((c,i)=>({id:'c'+i,cat:'Mening so\'zlarim',ar:c.ar,tr:c.tr,uz:c.uz}))];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',4200)}
+
+/* ---------- ovoz ---------- */
+function speak(t,rate){
+  try{
+    const ss=window.speechSynthesis;if(!ss){toast('Bu brauzerda ovoz yo\'q');return}
+    const v=ss.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith('ar'));
+    const u=new SpeechSynthesisUtterance(t);u.lang='ar-SA';if(v)u.voice=v;u.rate=rate||.8;
+    ss.cancel();ss.speak(u);
+    if(!v&&!S.vflag){S.vflag=1;save();toast('Arabcha ovoz topilmasa: iPhone Sozlamalar → Maxsus imkoniyatlar → Aytib berish (Spoken Content) → Ovozlar → Arabcha yuklab oling.')}
+  }catch(e){}
+}
+try{speechSynthesis.getVoices()}catch(e){}
+
+/* ---------- navigatsiya ---------- */
+let T='today',L=null,P=null,M=null,TS=null,LS='letters',HL=null;
+const TABS=[['today','◉','Bugun'],['letters','ا','Harflar'],['words','☰','Lug\'at'],['practice','✦','Mashq'],['video','▶','Video']];
+function drawNav(){$('#nav').innerHTML=TABS.map(t=>`<button class="${T==t[0]?'on':''}" data-a="tab" data-t="${t[0]}"><b>${t[1]}</b>${t[2]}</button>`).join('')}
+function render(){
+  drawNav();
+  const v=(T=='today'&&TS=='words')?vTodayWords:{today:vToday,letters:vLetters,words:vWords,practice:vPractice,video:vVideo}[T];
+  $('#app').innerHTML=v();
+}
+
+/* ---------- Bugun ---------- */
+function vToday(){
+  const d=day(),n=streak();
+  const tasks=[
+    ['Harflar: 3 ta yangi harf',d.l.length,3],
+    ['Lug\'at: 10 ta kartani takrorlash',d.c,10],
+    ['Mashq: 1 ta mashqni tugatish',d.p,1]
+  ];
+  let dots='';for(let i=13;i>=0;i--){const x=new Date();x.setDate(x.getDate()-i);dots+=`<div class="dot ${isAct(dk(x))?'a':''}" title="${dk(x)}"></div>`}
+  const known=Object.keys(S.letters).filter(k=>S.letters[k]).length;
+  const learned=Object.values(S.cards).filter(c=>c.box>=3).length;
+  const nl=LET.map((l,i)=>i).filter(i=>!S.letters[LET[i][0]]).slice(0,3);
+  const tw=todayWords();
+  const hdone=HK.filter(h=>S.hl[h.id]).length;
+  const seen=Object.keys(S.cards).length;
+  return `<h1>Assalomu alaykum 👋</h1>
+  <p class="m">Bugun faqat boshlang. 20 daqiqa ham yetadi, asosiysi — zanjir uzilmasin.</p>
+  <div class="card row"><div style="font-size:42px">🔥</div><div class="sp"><div style="font-size:26px;font-weight:700">${n} kun</div><div class="m" style="margin:0">ketma-ket o'qigan kunlaringiz</div></div></div>
+  <h2>Bugungi vazifalar</h2>
+  ${tasks.map(t=>{const done=t[1]>=t[2];return `<div class="card task"><div class="chk ${done?'d':''}">${done?'✓':''}</div><div class="sp">${t[0]}<div class="bar"><i style="width:${Math.min(100,t[1]/t[2]*100)}%"></i></div></div><div class="m" style="margin:0">${Math.min(t[1],t[2])}/${t[2]}</div></div>`}).join('')}
+  <h2>Bugungi 3 ta harf</h2>
+  ${nl.length?`<div class="grid" style="grid-template-columns:repeat(3,1fr)">${nl.map(i=>`<div class="lt" data-a="let" data-i="${i}"><span class="ar">${LET[i][0]}</span><small>${LET[i][1]}</small></div>`).join('')}</div><p class="m" style="margin-top:8px">Har birini bosing, tovushini eshiting va "Bildim" tugmasini bosing.</p>`:`<p class="m">Hamma harflarni bildingiz 🎉</p>`}
+  <h2>Bugungi so'zlar</h2>
+  <div class="card row"><div class="sp"><b>${tw.length} ta yangi so'z</b><div class="m" style="margin:0">${tw.filter(w=>S.cards[w.id]).length} / ${tw.length} ko'rildi</div></div><button class="pri" data-a="twopen">Ochish</button></div>
+  <div class="row"><button class="sp" data-a="tab" data-t="practice">Mashq qilish</button></div>
+  <h2>Oxirgi 14 kun</h2><div class="card"><div class="dots">${dots}</div></div>
+  <h2>Natijalar</h2>
+  <div class="card"><div class="row"><span class="sp">Bilgan harflar</span><b>${known} / 28</b></div><div class="bar"><i style="width:${known/28*100}%"></i></div></div>
+  <div class="card"><div class="row"><span class="sp">Yaxshi yod bo'lgan so'zlar</span><b>${learned}</b></div></div>
+  <div class="card"><div class="row"><span class="sp">Ko'rilgan so'zlar</span><b>${seen} / ${allWords().length}</b></div></div>
+  <div class="card"><div class="row"><span class="sp">Harakat darslari</span><b>${hdone} / ${HK.length}</b></div></div>
+  <h2>Zaxira nusxa</h2>
+  <div class="card"><p class="m">Natijalaringiz faqat shu telefonda saqlanadi. Vaqti-vaqti bilan nusxa olib, xabarlar yoki qaydlar ilovasiga saqlab qo'ying. Telefon almashsa, shu yerga qo'yib tiklaysiz.</p>
+  <div class="row"><button class="sp" data-a="bk">Nusxa olish</button><button class="sp" data-a="rs">Tiklash</button></div>
+  <textarea id="bkt" placeholder="Nusxa shu yerda chiqadi. Tiklash uchun nusxani shu yerga qo'yib, «Tiklash» ni bosing." spellcheck="false" autocapitalize="off"></textarea></div>`;
+}
+
+/* ---------- Harflar ---------- */
+function todayWords(){
+  const d=day(),all=allWords();
+  if(!d.nw){d.nw=all.filter(w=>!S.cards[w.id]).slice(0,10).map(w=>w.id);save()}
+  return d.nw.map(id=>all.find(w=>w.id==id)).filter(Boolean);
+}
+function vTodayWords(){
+  const ws=todayWords(),seen=ws.filter(w=>S.cards[w.id]).length;
+  if(!ws.length)return `<div class="row"><button data-a="tback">← Bugun</button></div><p class="m ctr" style="margin-top:40px">Yangi so'zlar tugadi. Lug'at bo'limidan o'zingiz so'z qo'shishingiz mumkin.</p>`;
+  return `<div class="row"><button data-a="tback">← Bugun</button></div><h1 style="margin-top:12px">Bugungi so'zlar</h1>
+  <p class="m">Har kuni 10 ta yangi so'z. Avval har birini eshiting va o'qing, keyin kartalar bilan yodlang. (${seen}/${ws.length} ko'rildi)</p>
+  <button class="pri full" data-a="tstart">Kartalar bilan yodlash</button>
+  <div class="card" style="margin-top:12px">${ws.map(w=>`<div class="wl"><span class="ar">${w.ar}</span><div class="sp"><b>${esc(w.tr)}</b><div class="m" style="margin:0">${esc(w.uz)}</div></div><button data-a="say" data-t="${esc(w.ar)}">🔊</button></div>`).join('')}</div>`;
+}
+
+/* ---------- Harakatlar (o'qish darslari) ---------- */
+const LAT=["","b","t","s","j","h","x","d","z","r","z","s","sh","s","d","t","z","ʼ","g'","f","q","k","l","m","n","h","v","y"];
+const FA='َ',KA='ِ',DA='ُ',SU='ْ',SH='ّ',TF='ً',TK='ٍ',TD='ٌ';
+const HK=[
+{id:'fatha',t:"Fatha",s:'ـَ',n:`Harfning tepasiga qo'yiladigan kichik qiya chiziq. "a" tovushini beradi: بَ — "ba".`,v:[{h:'Fatha — a',a0:1,f:c=>c+FA,l:x=>x+'a'}]},
+{id:'kasra',t:"Kasra",s:'ـِ',n:`Harfning tagiga qo'yiladigan kichik qiya chiziq. "i" tovushini beradi: بِ — "bi".`,v:[{h:'Kasra — i',a0:1,f:c=>c+KA,l:x=>x+'i'}]},
+{id:'damma',t:"Damma",s:'ـُ',n:`Harfning tepasiga qo'yiladigan kichik "vov"ga o'xshash belgi. "u" tovushini beradi: بُ — "bu".`,v:[{h:'Damma — u',a0:1,f:c=>c+DA,l:x=>x+'u'}]},
+{id:'sukun',t:"Sukun",s:'ـْ',n:`Harf ustidagi kichik doira. Harfda unli yo'qligini bildiradi, u oldingi unli bilan bir bo'g'inda o'qiladi: أَبْ — "ab".`,v:[
+  {h:'a + harf',f:c=>'أ'+FA+c+SU,l:x=>'a'+x},{h:'i + harf',f:c=>'إ'+KA+c+SU,l:x=>'i'+x},{h:'u + harf',f:c=>'أ'+DA+c+SU,l:x=>'u'+x}]},
+{id:'tanvin',t:"Tanvin",s:'ـً ـٍ ـٌ',n:`So'z oxiridagi qo'sh belgi: oxirida "n" tovushi qo'shiladi. بً — "ban", بٍ — "bin", بٌ — "bun".`,v:[
+  {h:'Fathatan — an',f:c=>c+TF,l:x=>x+'an'},{h:'Kasratan — in',f:c=>c+TK,l:x=>x+'in'},{h:'Dammatan — un',f:c=>c+TD,l:x=>x+'un'}]},
+{id:'madd',t:"Cho'ziq unlilar",s:'ـَا',n:`Fatha + alif = "ā", kasra + ya = "ī", damma + vov = "ū". Tovush taxminan ikki barobar cho'ziladi: بَا — "bā", بِي — "bī", بُو — "bū".`,v:[
+  {h:'ā — fatha + alif',f:c=>c+FA+'ا',l:x=>x+'ā'},{h:'ī — kasra + ya',f:c=>c+KA+'ي',l:x=>x+'ī'},{h:'ū — damma + vov',f:c=>c+DA+'و',l:x=>x+'ū'}]},
+{id:'shadda',t:"Shadda",s:'ـّ',n:`Harf ustidagi "w"ga o'xshash belgi. Harf ikki marta o'qiladi, ya'ni kuchaytiriladi: بَّ — "bba".`,v:[
+  {h:'Shadda + a',f:c=>c+SH+FA,l:x=>x+x+'a'},{h:'Shadda + i',f:c=>c+SH+KA,l:x=>x+x+'i'},{h:'Shadda + u',f:c=>c+SH+DA,l:x=>x+x+'u'}]}
+];
+function hItems(v){return LET.map((l,i)=>{if(i==0&&!v.a0)return null;const c=i==0?'أ':l[0];return [v.f(c),v.l(LAT[i])]}).filter(Boolean)}
+function vHList(){
+  const done=HK.filter(h=>S.hl[h.id]).length;
+  return `<p class="m">Harakatlar harflarni o'qishni o'rgatadigan belgilardir. Darslarni ketma-ket o'ting (${done}/${HK.length}). Tartib Qur'on o'qish boshlang'ich qo'llanmalarida (masalan, "Muallimi soniy"da) uchraydigan odatiy tartibga asoslangan; kitobdagi matnlar ko'chirilmagan.</p>`+
+  HK.map((h,i)=>`<div class="card row" data-a="hopen" data-i="${i}" style="cursor:pointer"><span class="ar" style="font-size:34px;min-width:70px;text-align:center">${h.s}</span><div class="sp"><b>${i+1}. ${h.t}</b></div><span class="chk ${S.hl[h.id]?'d':''}">${S.hl[h.id]?'✓':''}</span></div>`).join('');
+}
+function vHLesson(){
+  const h=HK[HL];
+  return `<div class="row"><button data-a="hback">← Darslar</button></div><h1 style="margin-top:12px">${HL+1}. ${h.t} <span class="ar">${h.s}</span></h1><p class="m">${h.n}</p><p class="m">Har bir katakni bosing, eshitasiz.</p>`+
+  h.v.map(v=>`<h2>${v.h}</h2><div class="grid">${hItems(v).map(t=>`<div class="lt" data-a="say" data-t="${t[0]}"><span class="ar">${t[0]}</span><small>${t[1]}</small></div>`).join('')}</div>`).join('')+
+  `<button class="full ${S.hl[h.id]?'':'pri'}" style="margin-top:16px" data-a="hdone">${S.hl[h.id]?'✓ Bajarildi (bekor qilish)':'Dars bajarildi ✓'}</button>`;
+}
+function vLetters(){
+  const seg=`<div class="row" style="margin-bottom:12px"><button class="sp ${LS=='letters'?'pri':''}" data-a="seg" data-s="letters">Harflar</button><button class="sp ${LS=='harakat'?'pri':''}" data-a="seg" data-s="harakat">Harakatlar</button></div>`;
+  if(LS=='harakat')return seg+(HL===null?vHList():vHLesson());
+  return seg+vAlpha();
+}
+function vAlpha(){
+  const known=Object.keys(S.letters).filter(k=>S.letters[k]).length;
+  return `<h1>Arab harflari</h1><p class="m">28 ta harf. Harfni bosing: tovushi, shakllari va misol so'z chiqadi. Bilgan harfingiz yashil bo'ladi (${known}/28).</p>
+  <div class="grid">${LET.map((l,i)=>`<div class="lt ${S.letters[l[0]]?'k':''}" data-a="let" data-i="${i}"><span class="ar">${l[0]}</span><small>${l[1]}</small></div>`).join('')}</div>`;
+}
+function openLetter(i){
+  const l=LET[i],d=day();
+  if(!d.l.includes(l[0])){d.l.push(l[0]);save()}
+  const forms=l[7]?[['Yakka',l[0]],['Boshida',l[0]+'ـ'],['O\'rtada','ـ'+l[0]+'ـ'],['Oxirida','ـ'+l[0]]]:[['Yakka',l[0]],['Boshida','—'],['O\'rtada','—'],['Oxirida','ـ'+l[0]]];
+  $('#sheet').innerHTML=`<div class="ctr"><div class="big ar">${l[0]}</div><h1>${l[1]}</h1><p class="m">O'qilishi: ${l[3]}</p>
+  <button class="pri" data-a="say" data-t="${l[2]}">🔊 Harf nomini eshitish</button></div>
+  <h2>Shakllari</h2><div class="forms">${forms.map(f=>`<div><span class="ar">${f[1]}</span><small>${f[0]}</small></div>`).join('')}</div>
+  <h2>Misol so'z</h2><div class="card row"><span class="ar" style="font-size:34px">${l[4]}</span><div class="sp"><b>${l[5]}</b><div class="m" style="margin:0">${l[6]}</div></div><button data-a="say" data-t="${l[4]}">🔊</button></div>
+  <div class="row"><button class="sp ${S.letters[l[0]]?'':'pri'}" data-a="known" data-i="${i}">${S.letters[l[0]]?'✓ Bilaman (bekor qilish)':'Bildim ✓'}</button><button class="sp" data-a="close">Yopish</button></div>`;
+  $('#modal').classList.add('on');
+}
+
+/* ---------- Lug'at ---------- */
+function queue(){const t=dk(),all=allWords();
+  const due=all.filter(w=>S.cards[w.id]&&S.cards[w.id].due<=t);
+  const nw=all.filter(w=>!S.cards[w.id]).slice(0,10);
+  return [...due,...nw]}
+function vWords(){
+  if(L)return vCards();
+  const all=allWords(),q=queue(),cats=[...new Set(all.map(w=>w.cat))];
+  return `<h1>Lug'at</h1><p class="m">Kartalar takrorlash tizimi bilan ishlaydi: bilmagan so'zlar tez-tez, bilganlari kamroq chiqadi.</p>
+  <button class="pri full" data-a="cstart" ${q.length?'':'disabled'}>${q.length?`Kartalarni boshlash (${q.length} ta)`:'Bugungi kartalar tugadi 🎉'}</button>
+  <h2>Yangi so'z qo'shish</h2>
+  <div class="card"><input type="text" id="nar" class="ar" placeholder="Arabcha" dir="rtl"><input type="text" id="ntr" placeholder="O'qilishi (lotincha)"><input type="text" id="nuz" placeholder="O'zbekcha tarjimasi"><button class="full" data-a="addw">Qo'shish</button></div>
+  ${cats.map(c=>`<h2>${c}</h2><div class="card">${all.filter(w=>w.cat==c).map(w=>`<div class="wl"><span class="ar">${w.ar}</span><div class="sp"><b>${esc(w.tr)}</b><div class="m" style="margin:0">${esc(w.uz)}</div></div><button data-a="say" data-t="${esc(w.ar)}">🔊</button></div>`).join('')}</div>`).join('')}`;
+}
+function vCards(){
+  if(!L.q.length)return `<div class="ctr" style="padding-top:60px"><div class="big">🎉</div><h1>Zo'r!</h1><p class="m">Bugungi kartalar tugadi.</p><button class="pri" data-a="cend">Orqaga</button></div>`;
+  const w=L.q[0];
+  return `<div class="row"><button data-a="cend">← Chiqish</button><span class="sp"></span><span class="tag">${L.q.length} ta qoldi</span></div>
+  <div class="card ctr" style="margin-top:14px;padding:30px 14px"><span class="tag">${w.cat}</span>
+  <div class="big ar">${w.ar}</div>
+  <button data-a="say" data-t="${esc(w.ar)}">🔊 Eshitish</button>
+  ${L.flip?`<h1 style="margin-top:18px">${esc(w.uz)}</h1><p class="m">${esc(w.tr)}</p>`:`<p class="m" style="margin-top:20px">Avval o'zingiz eslang, keyin ochib ko'ring</p>`}</div>
+  ${L.flip?`<div class="row"><button class="sp" data-a="rate" data-r="0" style="border-color:var(--bad)">Bilmadim</button><button class="sp" data-a="rate" data-r="1">Qiyin</button><button class="sp pri" data-a="rate" data-r="2">Bildim</button></div>`:`<button class="pri full" data-a="flip">Javobni ko'rsatish</button>`}`;
+}
+function rate(r){
+  const w=L.q.shift(),c=S.cards[w.id]||{box:0,due:dk()};
+  if(r==0){c.box=0;c.due=dk();L.q.push(w)}
+  else if(r==1){c.box=Math.max(1,c.box);c.due=addDays(1)}
+  else{c.box=Math.min(5,c.box+1);c.due=addDays(IV[c.box])}
+  S.cards[w.id]=c;day().c++;save();L.flip=false;
+}
+
+/* ---------- Mashq ---------- */
+const norm=s=>s.replace(/[ً-ٰٟـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/\s+/g,' ').trim();
+function startP(mode){
+  P={mode,n:0,score:0,total:10,fb:null,done:false};
+  if(mode=='match')newMatch();else nextQ();
+}
+function nextQ(){
+  const all=allWords(),w=pick(all);
+  P.w=w;P.fb=null;
+  P.opts=shuffle([w,...shuffle(all.filter(x=>x.id!=w.id)).slice(0,3)]);
+}
+function newMatch(){
+  const ws=shuffle(allWords()).slice(0,5);
+  M={ws,a:shuffle(ws.map(w=>w.id)),u:shuffle(ws.map(w=>w.id)),sa:null,su:null,dn:[]};
+}
+function finishP(){if(P.done)return;P.done=true;day().p++;save()}
+function vPractice(){
+  if(!P){return `<h1>Mashq</h1><p class="m">Har bir mashq tugatilsa, bugungi vazifa bajariladi.</p>
+  <div class="card"><b>Test</b><p class="m">Arabcha so'z ko'rsatiladi, o'zbekcha tarjimasini toping.</p><button class="pri full" data-a="pstart" data-m="test">Boshlash</button></div>
+  <div class="card"><b>Eshitib topish</b><p class="m">So'zni eshitasiz, arabcha yozuvini tanlaysiz.</p><button class="pri full" data-a="pstart" data-m="listen">Boshlash</button></div>
+  <div class="card"><b>Yozish</b><p class="m">O'zbekcha so'z beriladi, arabchasini yozasiz (harakatlar shart emas).</p><button class="pri full" data-a="pstart" data-m="write">Boshlash</button></div>
+  <div class="card"><b>Juftlarni topish</b><p class="m">5 ta arabcha so'zni o'zbekcha tarjimasi bilan juftlang.</p><button class="pri full" data-a="pstart" data-m="match">Boshlash</button></div>`}
+  const head=`<div class="row"><button data-a="pend">← Chiqish</button><span class="sp"></span><span class="tag">${P.mode=='match'?'Juftlar':P.n+'/'+P.total}</span></div>`;
+  if(P.mode=='match'){
+    const f=id=>ws=>0;const by=id=>M.ws.find(w=>w.id==id);
+    const all=M.dn.length==5;if(all)finishP();
+    return head+`<h1 style="margin-top:14px">Juftlarni toping</h1>
+    ${all?`<div class="card ctr"><div class="big">🎉</div><b>Hammasi to'g'ri!</b><br><br><button class="pri" data-a="pstart" data-m="match">Yana</button></div>`:''}
+    <div class="mt"><div>${M.a.map(id=>`<button class="ar full ${M.sa==id?'sel':''} ${M.dn.includes(id)?'dn':''}" style="margin-bottom:8px" data-a="ma" data-id="${id}">${by(id).ar}</button>`).join('')}</div>
+    <div>${M.u.map(id=>`<button class="full ${M.su==id?'sel':''} ${M.dn.includes(id)?'dn':''}" style="margin-bottom:8px;min-height:56px" data-a="mu" data-id="${id}">${esc(by(id).uz)}</button>`).join('')}</div></div>`;
+  }
+  if(P.n>=P.total){finishP();return head+`<div class="ctr" style="padding-top:40px"><div class="big">${P.score>=8?'🌟':'👍'}</div><h1>${P.score} / ${P.total}</h1><p class="m">Mashq tugadi. Bugungi vazifa bajarildi.</p><button class="pri" data-a="pstart" data-m="${P.mode}">Yana bir marta</button></div>`}
+  const w=P.w,fb=P.fb;
+  let body='';
+  if(P.mode=='test'){
+    body=`<div class="card ctr"><div class="big ar">${w.ar}</div><button data-a="say" data-t="${esc(w.ar)}">🔊</button></div>`+
+      P.opts.map((o,i)=>`<button class="opt ${fb?(o.id==w.id?'ok':(fb.i==i?'no':'')):''}" data-a="ans" data-i="${i}">${esc(o.uz)}</button>`).join('');
+  }else if(P.mode=='listen'){
+    body=`<div class="card ctr"><p class="m">Eshiting va to'g'ri yozuvni tanlang</p><button class="pri" data-a="say" data-t="${esc(w.ar)}">🔊 Eshitish</button></div>`+
+      P.opts.map((o,i)=>`<button class="opt ar ${fb?(o.id==w.id?'ok':(fb.i==i?'no':'')):''}" data-a="ans" data-i="${i}">${o.ar}</button>`).join('')+
+      (fb?`<p class="m ctr">${esc(w.tr)} — ${esc(w.uz)}</p>`:'');
+  }else{
+    body=`<div class="card ctr"><p class="m">Arabchasini yozing:</p><h1>${esc(w.uz)}</h1><p class="m">Ishora: ${esc(w.tr)}</p></div>
+    <input type="text" id="wi" class="ar" dir="rtl" placeholder="اكتب هنا" ${fb?'disabled':''} autocomplete="off" autocapitalize="off">
+    ${fb?`<div class="card ctr" style="border-color:${fb.ok?'var(--ok)':'var(--bad)'}"><div class="big ar" style="font-size:44px">${w.ar}</div>${fb.ok?'To\'g\'ri ✓':'To\'g\'ri javob shu'}<br><button data-a="say" data-t="${esc(w.ar)}" style="margin-top:8px">🔊</button></div>`:`<button class="pri full" data-a="wcheck">Tekshirish</button>`}`;
+  }
+  return head+`<div style="margin-top:14px">${body}</div>${fb?`<button class="pri full" data-a="next" style="margin-top:6px">Keyingisi →</button>`:''}`;
+}
+
+/* ---------- Video ---------- */
+function vVideo(){
+  return `<h1>Videolar</h1><p class="m">O'zingiz topgan dars havolalarini (YouTube va boshqalar) shu yerga mavzu bo'yicha saqlang. Bosilganda tashqarida ochiladi.</p>
+  <div class="card"><input type="text" id="vt" placeholder="Nomi (masalan: Harflar 1-dars)"><input type="text" id="vu" placeholder="Havola (https://...)"><button class="full pri" data-a="addv">Saqlash</button></div>
+  ${S.videos.length?S.videos.map((v,i)=>`<div class="card row"><a class="sp" style="color:var(--gold);text-decoration:none" href="${esc(v.u)}" target="_blank" rel="noopener">▶ ${esc(v.t)}</a><button data-a="delv" data-i="${i}">✕</button></div>`).join(''):`<p class="m ctr">Hozircha havola yo'q.</p>`}`;
+}
+
+/* ---------- hodisalar ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-a]');
+  if(!t){if(e.target.id=='modal'){$('#modal').classList.remove('on');render()}return}
+  const a=t.dataset.a,d=t.dataset;
+  switch(a){
+    case 'tab':T=d.t;L=null;P=null;M=null;TS=null;HL=null;render();window.scrollTo(0,0);break;
+    case 'twopen':TS='words';render();window.scrollTo(0,0);break;
+    case 'tback':TS=null;render();break;
+    case 'tstart':{const ws=todayWords().filter(w=>!S.cards[w.id]||S.cards[w.id].due<=dk());
+      const due=allWords().filter(w=>S.cards[w.id]&&S.cards[w.id].due<=dk()&&!ws.some(x=>x.id==w.id));
+      L={q:[...ws,...due],flip:false,back:'today'};T='words';render();window.scrollTo(0,0);break}
+    case 'seg':LS=d.s;HL=null;render();break;
+    case 'hopen':HL=+d.i;render();window.scrollTo(0,0);break;
+    case 'hback':HL=null;render();break;
+    case 'hdone':{const id=HK[HL].id;S.hl[id]=!S.hl[id];if(S.hl[id]){const x=day();x.h=(x.h||0)+1}save();render();break}
+    case 'let':openLetter(+d.i);break;
+    case 'say':speak(d.t);break;
+    case 'known':{const c=LET[+d.i][0];S.letters[c]=!S.letters[c];save();openLetter(+d.i);break}
+    case 'close':$('#modal').classList.remove('on');render();break;
+    case 'cstart':L={q:queue(),flip:false};render();break;
+    case 'cend':{const b=L&&L.back;L=null;if(b)T=b;render();break}
+    case 'flip':L.flip=true;render();speak(L.q[0].ar);break;
+    case 'rate':rate(+d.r);render();break;
+    case 'addw':{const ar=$('#nar').value.trim(),tr=$('#ntr').value.trim(),uz=$('#nuz').value.trim();
+      if(!ar||!uz){toast('Arabcha va o\'zbekcha qismini yozing');break}
+      S.custom.push({ar,tr:tr||'—',uz});save();toast('Qo\'shildi ✓');render();break}
+    case 'pstart':startP(d.m);render();if(P.mode=='listen')speak(P.w.ar);break;
+    case 'pend':P=null;M=null;render();break;
+    case 'ans':{if(P.fb)break;const ok=P.opts[+d.i].id==P.w.id;if(ok)P.score++;P.fb={ok,i:+d.i};render();speak(P.w.ar);break}
+    case 'wcheck':{const v=$('#wi').value;if(!v.trim())break;const ok=norm(v)==norm(P.w.ar);if(ok)P.score++;P.fb={ok};render();speak(P.w.ar);break}
+    case 'next':P.n++;if(P.n<P.total)nextQ();render();if(P.mode=='listen'&&P.n<P.total)speak(P.w.ar);break;
+    case 'ma':if(M.dn.includes(d.id))break;M.sa=d.id;chk();break;
+    case 'mu':if(M.dn.includes(d.id))break;M.su=d.id;chk();break;
+    case 'bk':{const t=$('#bkt');t.value=JSON.stringify(S);t.focus();t.select();
+      try{navigator.clipboard.writeText(t.value).then(()=>toast('Nusxa olindi. Uni xavfsiz joyga saqlang.'),()=>toast('Matnni belgilab, qo\'lda nusxalang.'))}catch(e){toast('Matnni belgilab, qo\'lda nusxalang.')}break}
+    case 'rs':{const t=$('#bkt').value.trim();if(!t){toast('Avval nusxani shu yerga qo\'ying');break}
+      try{const o=JSON.parse(t);if(!o||typeof o!='object'||!o.cards||!o.days)throw 0;
+        S=Object.assign({cards:{},letters:{},days:{},custom:[],videos:[],vflag:0,hl:{}},o);save();toast('Tiklandi ✓');render()}
+      catch(e){toast('Bu to\'g\'ri zaxira nusxa emas')}break}
+    case 'addv':{const tt=$('#vt').value.trim(),u=$('#vu').value.trim();
+      if(!tt||!/^https?:\/\//i.test(u)){toast('Nomi va https:// bilan boshlanadigan havola kerak');break}
+      S.videos.push({t:tt,u});save();render();break}
+    case 'delv':S.videos.splice(+d.i,1);save();render();break;
+  }
+});
+function chk(){
+  if(M.sa&&M.su){
+    if(M.sa==M.su){M.dn.push(M.sa);const w=M.ws.find(x=>x.id==M.sa);speak(w.ar)}
+    else toast('Mos emas, yana urinib ko\'ring');
+    M.sa=null;M.su=null;
+  }
+  render();
+}
+render();
+try{if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+</script>
+</body>
+</html>
